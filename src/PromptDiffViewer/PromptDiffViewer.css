@@ -1,0 +1,197 @@
+/* PromptDiffViewer — all rules are scoped under .pdv so it can be dropped
+   into any app without leaking styles. Colors are CSS variables; override
+   them on .pdv (or a parent) to theme, e.g. for dark mode. */
+
+.pdv {
+  --pdv-border: #d0d7de;
+  --pdv-bg: #ffffff;
+  --pdv-fg: #1f2328;
+  --pdv-muted: #59636e;
+  --pdv-num-bg: #f6f8fa;
+  --pdv-add-bg: #dafbe1;
+  --pdv-add-strong: #aceebb;
+  --pdv-del-bg: #ffebe9;
+  --pdv-del-strong: #ffcecb;
+  --pdv-empty-bg: #f6f8fa;
+  --pdv-accent: #0969da;
+
+  border: 1px solid var(--pdv-border);
+  border-radius: 8px;
+  background: var(--pdv-bg);
+  color: var(--pdv-fg);
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  overflow: hidden;
+}
+
+.pdv.pdv-dark {
+  --pdv-border: #3d444d;
+  --pdv-bg: #0d1117;
+  --pdv-fg: #f0f6fc;
+  --pdv-muted: #9198a1;
+  --pdv-num-bg: #151b23;
+  --pdv-add-bg: rgba(46, 160, 67, 0.15);
+  --pdv-add-strong: rgba(46, 160, 67, 0.4);
+  --pdv-del-bg: rgba(248, 81, 73, 0.12);
+  --pdv-del-strong: rgba(248, 81, 73, 0.4);
+  --pdv-empty-bg: #151b23;
+  --pdv-accent: #4493f8;
+}
+
+/* Toolbar */
+
+.pdv-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--pdv-border);
+  background: var(--pdv-num-bg);
+}
+
+.pdv-stats {
+  display: flex;
+  gap: 8px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.pdv-stat-add { color: #1a7f37; }
+.pdv-stat-del { color: #cf222e; }
+.pdv.pdv-dark .pdv-stat-add { color: #3fb950; }
+.pdv.pdv-dark .pdv-stat-del { color: #f85149; }
+.pdv-stat-same { color: var(--pdv-muted); font-weight: 400; }
+
+.pdv-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pdv-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--pdv-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.pdv-view-switch {
+  display: inline-flex;
+  border: 1px solid var(--pdv-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.pdv-view-switch button {
+  border: none;
+  background: var(--pdv-bg);
+  color: var(--pdv-muted);
+  padding: 4px 12px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.pdv-view-switch button + button {
+  border-left: 1px solid var(--pdv-border);
+}
+
+.pdv-view-switch button.active {
+  background: var(--pdv-accent);
+  color: #fff;
+}
+
+/* Table */
+
+.pdv-scroll {
+  overflow-x: auto;
+}
+
+.pdv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.pdv-table thead th {
+  text-align: left;
+  padding: 6px 12px;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+  color: var(--pdv-muted);
+  background: var(--pdv-num-bg);
+  border-bottom: 1px solid var(--pdv-border);
+}
+
+.pdv-split thead th + th {
+  border-left: 1px solid var(--pdv-border);
+}
+
+.pdv-col-num { width: 1%; }
+.pdv-col-sign { width: 1%; }
+.pdv-col-text { width: 49%; }
+.pdv-unified .pdv-col-text { width: 98%; }
+
+.pdv-num {
+  padding: 0 10px;
+  text-align: right;
+  color: var(--pdv-muted);
+  background: var(--pdv-num-bg);
+  user-select: none;
+  white-space: nowrap;
+  vertical-align: top;
+  min-width: 36px;
+}
+
+.pdv-sign {
+  padding: 0 4px;
+  text-align: center;
+  color: var(--pdv-muted);
+  user-select: none;
+  vertical-align: top;
+}
+
+.pdv-text {
+  padding: 0 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  vertical-align: top;
+}
+
+.pdv-split .pdv-text + .pdv-num {
+  border-left: 1px solid var(--pdv-border);
+}
+
+/* Row/cell states */
+
+.pdv-cell-add { background: var(--pdv-add-bg); }
+.pdv-cell-del { background: var(--pdv-del-bg); }
+.pdv-cell-empty { background: var(--pdv-empty-bg); }
+.pdv-num.pdv-cell-add { background: var(--pdv-add-strong); color: var(--pdv-fg); }
+.pdv-num.pdv-cell-del { background: var(--pdv-del-strong); color: var(--pdv-fg); }
+
+.pdv-mark-add,
+.pdv-mark-del {
+  border-radius: 3px;
+  padding: 0 1px;
+  color: inherit;
+}
+
+.pdv-mark-add { background: var(--pdv-add-strong); }
+.pdv-mark-del { background: var(--pdv-del-strong); }
+
+.pdv-row-collapsed td {
+  padding: 4px 12px;
+  text-align: center;
+  color: var(--pdv-muted);
+  background: var(--pdv-num-bg);
+  border-top: 1px dashed var(--pdv-border);
+  border-bottom: 1px dashed var(--pdv-border);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+}
