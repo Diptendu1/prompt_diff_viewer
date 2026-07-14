@@ -36,9 +36,30 @@ import PromptDiffViewer from './PromptDiffViewer';
 | `newLabel` | `string` | `'After'` | Column header for the new side |
 | `defaultView` | `'split' \| 'unified'` | `'split'` | Initial layout |
 | `showToolbar` | `boolean` | `true` | Show the stats + view-switch toolbar |
+| `showActions` | `boolean` | `true` | Per-change Accept/Reject buttons + Accept all / Reject all in the toolbar |
 | `hideUnchanged` | `boolean` | `false` | Start with unchanged lines collapsed |
 | `contextLines` | `number` | `2` | Unchanged lines kept around each change when collapsing |
 | `className` | `string` | `''` | Extra class on the root (pass `pdv-dark` for the built-in dark theme) |
+| `onMergeChange` | `function` | — | Called after every accept/reject decision (see below) |
+
+### Accept / reject workflow
+
+Each contiguous change (hunk) gets an action bar with **✓ Accept** / **✕ Reject** buttons; the toolbar has **Accept all**, **Reject all**, and **Reset**. Decided hunks are dimmed (with strikethrough on the discarded side) and show a status chip with an **Undo** button.
+
+Accepting a change takes the new text; rejecting (or leaving it pending) keeps the old text. After every decision the component calls:
+
+```jsx
+<PromptDiffViewer
+  oldText={v1}
+  newText={v2}
+  onMergeChange={(mergedText, { accepted, rejected, pending, decisions }) => {
+    // mergedText is the full text with all current decisions applied.
+    // Persist it once pending === 0, or live-preview it as users review.
+  }}
+/>
+```
+
+Set `showActions={false}` for a read-only diff.
 
 ### Theming
 
@@ -57,6 +78,7 @@ const stats = diffStats(rows);              // { additions, deletions }
 
 ## Features
 
+- **Accept/reject per change** with Accept all / Reject all, Undo, and a merged-text callback
 - **Split and unified views**, switchable at runtime
 - **Word-level highlighting** inside modified lines (not just whole-line coloring)
 - **Modified-line pairing** — a changed line shows as one aligned row, not a remove + add

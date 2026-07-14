@@ -31,6 +31,7 @@ export default function App() {
   const [oldText, setOldText] = useState(PROMPT_V1);
   const [newText, setNewText] = useState(PROMPT_V2);
   const [dark, setDark] = useState(false);
+  const [merge, setMerge] = useState(null);
 
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: 24, fontFamily: 'system-ui, sans-serif' }}>
@@ -70,7 +71,26 @@ export default function App() {
         oldLabel="Prompt v1"
         newLabel="Prompt v2"
         defaultView="split"
+        onMergeChange={(mergedText, summary) => setMerge({ mergedText, summary })}
       />
+
+      {merge && (
+        <div style={{ marginTop: 20 }}>
+          <label style={{ fontWeight: 600, fontSize: 13 }}>
+            Merged result{' '}
+            <span style={{ fontWeight: 400, color: '#666' }}>
+              ({merge.summary.accepted} accepted, {merge.summary.rejected} rejected,{' '}
+              {merge.summary.pending} pending)
+            </span>
+          </label>
+          <textarea
+            readOnly
+            value={merge.mergedText}
+            rows={12}
+            style={{ width: '100%', fontFamily: 'monospace', fontSize: 12, marginTop: 6, boxSizing: 'border-box', background: '#fafafa' }}
+          />
+        </div>
+      )}
     </div>
   );
 }

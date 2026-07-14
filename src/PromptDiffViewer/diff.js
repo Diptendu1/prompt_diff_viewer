@@ -157,6 +157,46 @@ export function diffLines(oldText, newText) {
   return rows;
 }
 
+/**
+ * Assign a hunk id to every changed row (contiguous runs of non-equal rows
+ * form one hunk). Equal rows get hunk = null. Returns { rows, hunkCount }.
+ */
+export function assignHunks(rows) {
+  let hunk = -1;
+  let inHunk = false;
+  const out = rows.map((row) => {
+    if (row.type === 'equal') {
+      inHunk = false;
+      return { ...row, hunk: null };
+    }
+    if (!inHunk) {
+      hunk++;
+      inHunk = true;
+    }
+    return { ...row, hunk };
+  });
+  return { rows: out, hunkCount: hunk + 1 };
+}
+
+/**
+ * Build the merged text from hunk decisions.
+ * decisions: { [hunkId]: 'accepted' | 'rejected' }
+ * Accepted hunks take the new side; rejected and undecided hunks keep the old side.
+ */
+export function buildMergedText(rows, decisions = {}) {
+  const lines = [];
+  for (const row of rows) {
+    if (row.type === 'equal') {
+      lines.push(row.oldLine);
+    } else if (decisions[row.hunk] === 'accepted') {
+      if (row.newLine !== null) lines.push(row.newLine);
+    } else {
+      if (row.oldLine !== null) lines.push(row.oldLine);
+    }
+  }
+  return lines.join('\n');
+}
+
 /** Summary counts used for the header badge. */
 export function diffStats(rows) {
   let additions = 0;

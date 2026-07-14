@@ -185,6 +185,101 @@
 .pdv-mark-add { background: var(--pdv-add-strong); }
 .pdv-mark-del { background: var(--pdv-del-strong); }
 
+/* Accept / Reject controls */
+
+.pdv-bulk {
+  display: flex;
+  gap: 6px;
+}
+
+.pdv-btn {
+  border: 1px solid var(--pdv-border);
+  border-radius: 6px;
+  background: var(--pdv-bg);
+  color: var(--pdv-fg);
+  padding: 3px 10px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pdv-btn:hover {
+  border-color: var(--pdv-muted);
+}
+
+.pdv-btn-accept {
+  color: #1a7f37;
+  border-color: rgba(26, 127, 55, 0.5);
+}
+
+.pdv-btn-accept:hover {
+  background: var(--pdv-add-bg);
+  border-color: #1a7f37;
+}
+
+.pdv-btn-reject {
+  color: #cf222e;
+  border-color: rgba(207, 34, 46, 0.5);
+}
+
+.pdv-btn-reject:hover {
+  background: var(--pdv-del-bg);
+  border-color: #cf222e;
+}
+
+.pdv.pdv-dark .pdv-btn-accept { color: #3fb950; border-color: rgba(63, 185, 80, 0.5); }
+.pdv.pdv-dark .pdv-btn-reject { color: #f85149; border-color: rgba(248, 81, 73, 0.5); }
+
+.pdv-hunk-bar td {
+  padding: 4px 10px;
+  background: var(--pdv-num-bg);
+  border-top: 1px solid var(--pdv-border);
+  border-bottom: 1px solid var(--pdv-border);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.pdv-hunk-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pdv-hunk-label {
+  color: var(--pdv-muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-right: 4px;
+}
+
+.pdv-chip {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.pdv-chip-accept { color: #1a7f37; background: var(--pdv-add-bg); }
+.pdv-chip-reject { color: #cf222e; background: var(--pdv-del-bg); }
+.pdv.pdv-dark .pdv-chip-accept { color: #3fb950; }
+.pdv.pdv-dark .pdv-chip-reject { color: #f85149; }
+
+/* Decided hunks are dimmed; rejected additions get a strikethrough. */
+.pdv-hunk-accepted td,
+.pdv-hunk-rejected td {
+  opacity: 0.55;
+}
+
+.pdv-hunk-rejected .pdv-text.pdv-cell-add {
+  text-decoration: line-through;
+}
+
+.pdv-hunk-accepted .pdv-text.pdv-cell-del {
+  text-decoration: line-through;
+}
+
 .pdv-row-collapsed td {
   padding: 4px 12px;
   text-align: center;
